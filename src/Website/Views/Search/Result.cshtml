@@ -1,0 +1,57 @@
+﻿@model Usergroup.Sugnl.Search.ISearchResult
+<label>Results</label>
+@if (Model.ResultDocuments.Count() > 0)
+{
+    <table class="table table-striped table-condensed">
+        <tr>
+            <th style="width: 50%">
+                Place
+            </th>
+            <th style="width: 50%">
+                Point
+            </th>
+        </tr>
+        @foreach (var document in Model.ResultDocuments)
+        {
+            <tr>
+                <td>
+                    @document["label"]
+                    @if (document["haspoint"] == "True")
+                    {
+                        <a href="#" class="more-popover" data-container="body" data-toggle="popover" data-placement="bottom" data-content="@document["description"]">
+                            <span class="glyphicon glyphicon-tag"></span>
+                        </a>
+                    }
+                </td>
+                <td>
+                    @GeoRssPointNormalisation(document["point"])
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">No results</div>
+}
+@functions {
+
+    public string GeoRssPointNormalisation(string point)
+    {
+        var parts = point.Split(' ');
+
+        var numbers = parts.Select(str =>
+            {
+                double value;
+                bool success = double.TryParse(str, out value);
+                return new { value, success };
+            })
+            .Where(pair => pair.success)
+            .Select(pair => pair.value.ToString("0.00000"));
+
+        if (numbers.Count() != 2) return point;
+        
+        return string.Join(", ", numbers.ToArray());
+    }
+
+}

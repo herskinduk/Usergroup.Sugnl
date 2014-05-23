@@ -1,0 +1,12 @@
+﻿@using Sitecore.Mvc.Presentation
+@using Sitecore.Mvc
+@model RenderingModel
+
+<div class="row">
+    <div class="col-sm-4">
+        @Html.Sitecore().Placeholder("left")
+    </div>
+    <div class="col-sm-8">
+        @Html.Sitecore().Placeholder("right")
+    </div>
+</div>

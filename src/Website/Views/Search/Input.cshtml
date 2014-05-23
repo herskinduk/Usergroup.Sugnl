@@ -1,0 +1,28 @@
+﻿@using Sitecore.Mvc
+@model Website.Models.SearchInputModel
+
+<form method="get" role="form">
+    <div class="form-group">
+        @Html.LabelFor(model => model.Criteria.Text, "Search")
+        @Html.TextBoxFor(model => model.Criteria.Text, new { @class = "form-control", @placeholder = "enter keywords" })
+        @Html.ValidationMessageFor(model => model.Criteria.Text)
+    </div>
+
+    <button type="submit" class="btn btn-default">
+        Search
+    </button>
+
+    @Html.HiddenFor(model => model.Criteria.PointRadius.Latitude)
+    @Html.HiddenFor(model => model.Criteria.PointRadius.Longitude)
+    @Html.HiddenFor(model => model.Criteria.PointRadius.RadiusKm)
+    @Html.HiddenFor(model => model.ZoomLevel)
+
+    <p class="help-block">
+        Results: @Model.NumberOfResults documents (@Model.TimeTaken ms)
+    </p>
+</form>
+<br />
+
+<label>Map</label>
+<div id="map-canvas"></div>
+<br />

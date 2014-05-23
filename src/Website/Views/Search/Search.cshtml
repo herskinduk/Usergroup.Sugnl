@@ -1,0 +1,17 @@
+﻿@using Sitecore.ContentSearch.Linq
+@model IEnumerable<Sitecore.ContentSearch.Linq.SearchHit<Sitecore.ContentSearch.SearchTypes.SearchResultItem>>
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Search</h2>
+
+@if (Model != null)
+{
+    <ul>
+        @foreach(var item in Model)
+        {
+            <li>@item.Score = @item.Document.Name</li>
+        }
+    </ul>
+}

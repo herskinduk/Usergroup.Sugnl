@@ -1,0 +1,32 @@
+﻿@model Website.Models.SearchFacetModel
+<label>Facets</label>
+<ul class="nav nav-list">
+    @foreach (var facet in Model.Result.Facets)
+    {
+        @RenderFacet(facet);
+    }
+</ul>
+
+@helper RenderFacet(Usergroup.Sugnl.Search.IFacet facet)
+{
+    <li>
+        <label class="nav-header">@facet.DisplayName</label>
+        <ul class="nav nav-list">
+            @foreach (var facetValue in facet.FacetValues)
+            {
+                <li>
+                    <a href="#">@facetValue.DisplayName (@facetValue.DocumentCount)</a>
+                    @if (facetValue.NestedFacets.Any())
+                    {
+                        <ul class="nav nav-list indent-nav">
+                            @foreach (var nestedFacet in facetValue.NestedFacets)
+                            {
+                                @RenderFacet(nestedFacet);
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        </ul>
+    </li>
+}
