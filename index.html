@@ -1,0 +1,472 @@
+﻿<!doctype html>
+<!-- 
+    Handcrafted using impress.js!
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1024" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>HOW TO GET RICH QUICK using Sitecore Search</title>
+    <meta name="author" content="Kern Herskind Nightingale" />
+    <link href="css/impress-demo.css" rel="stylesheet" />
+    <link href="css/highlight/monokai_sublime.css" rel="stylesheet" />
+</head>
+<body class="impress-not-supported">
+    <div class="fallback-message">
+        <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
+        <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
+    </div>
+
+    <div id="impress">
+
+        <div id="begin" class="step" data-x="0" data-y="0">
+            <img src="images/title.png" width="900" alt="title slide" />
+        </div>
+
+        <div class="step" data-x="0" data-y="1000">
+            <div class="header">
+                What is on offer?
+            </div>
+            <div class="undercontent">
+                <p>
+                    <i>
+                        This presentation will take you on a tour of one of Sitecore 7’s Content Search API. Expect to see some practical examples, tips and tricks, and a little hack.
+                    </i>
+                </p>
+                <p>
+                    <br />
+                    <i>
+                        Plus – learn the secret of how to GET RICH QUICK!
+                    </i>
+                </p>
+            </div>
+        </div>
+
+        <div class="step" data-x="0" data-y="2000">
+            <p style="text-align:left; line-height: 1; font-size: 90px;">
+                1) SEARCH EXAMPLE<br />
+                <span class="muted">
+                    2) OFF-PISTE: GEO<br />
+                    3) TIPS AND TRICKS
+                </span>
+            </p>
+        </div>
+
+        <div class="step" data-x="0" data-y="3000">
+            <div style="width: 45%; height:100%; align-content:center; float:left;">
+                <p style="text-align:left; line-height: 1; font-size: 80px;">
+                    400K items imported from dbpedia.org
+                </p>
+            </div>
+            <div style="width: 45%; height:100%; align-content:center; float:right;">
+                <p style="text-align:left; line-height: 1; font-size: 80px;">
+                    Search page with the usual suspects
+                </p>
+            </div>
+        </div>
+
+        <div class="step" data-x="0" data-y="4000">
+            <p style="text-align:center; line-height: 1; font-size: 80px;">
+                <img src="images/screenshot.png" width="100%" /><br />
+                Example Search Page
+            </p>
+        </div>
+
+        <div class="step" data-x="-650" data-y="5000">
+            <p style="text-align:center; line-height: 1; font-size: 80px;">
+                <img src="images/screenshot-mono.png" width="100%" /><br />
+                Single Component
+            </p>
+        </div>
+
+        <div class="step" data-x="650" data-y="5000">
+            <p style="text-align:center; line-height: 1; font-size: 80px;">
+                <img src="images/screenshot-multi.png" width="100%" /><br />
+                Multiple Components
+            </p>
+        </div>
+
+        <div class="step" data-x="1950" data-y="5000">
+            <p style="text-align:center; line-height: 1; font-size: 80px;">
+                <img src="images/screenshot-arrows.png" width="100%" /><br />
+                Search Data Everywhere!
+            </p>
+        </div>
+
+        <div class="step" data-x="2200" data-y="4000" data-z="0">
+            <div class="headersq">
+                <div class="outerContainer"><div class="innerContainer">Decorator Pattern to the Rescue</div></div>
+            </div>
+            <div class="rightcontent">
+                <p>
+                    In object-oriented programming, <span class="attention">the decorator pattern</span> (also known as Wrapper,
+                    an alternative naming shared with the Adapter pattern) is a design pattern that <span class="attention">
+                        allows behavior to be added
+                        to an individual object
+                    </span>, either statically or dynamically, <span class="attention">without affecting the behavior of other objects from the same class</span>.
+                </p>
+                <p style="font-size: 80%;">
+                    <br />(source: <a href="http://en.wikipedia.org/wiki/Decorator_pattern">http://en.wikipedia.org/wiki/Decorator_pattern</a>)
+                </p>
+            </div>
+        </div>
+
+        <div class="step" data-x="2200" data-y="3000" data-rotate-z="15" data-z="-500">
+            <pre>
+            <code class="cs">
+// Service interface
+public interface ISearchService
+{
+    ISearchResult Search(SearchCriteria criteria);
+}
+// Concrete decorator will wrap my concrete service
+public class CachingSearchServiceDecorator : ISearchService
+{
+    private readonly ISearchService concreteService;
+    private readonly ICache&lt;ISearchResult&gt; cache;
+    
+    public CachingSearchServiceDecorator(ISearchService concreteService, ICache&lt;ISearchResult&gt; cache)
+    {
+        this.concreteService = concreteService;
+        this.cache = cache;
+    }
+    public ISearchResult Search(SearchCriteria criteria)
+    {
+        var key = "CachingSearchServiceDecorator";
+        if (criteria != null)
+        {
+            key += criteria.GetHashCode().ToString();
+        }
+        if (!cache.ContainsKey(key))
+        {
+            cache.AddEntity(key, concreteService.Search(criteria));
+        }
+        return cache.GetEntity(key);
+    }
+}
+            </code>
+            </pre>
+        </div>
+
+        <div class="step evolve" data-x="2200" data-y="3000" data-rotate-z="15" data-z="-500">
+            <pre>
+            <code class="cs">
+// Service interface
+public interface ISearchService
+{
+    ISearchResult Search(SearchCriteria criteria);
+}
+// Concrete decorator will wrap my concrete service
+public class CachingSearchServiceDecorator : ISearchService
+{
+    private readonly ISearchService concreteService;
+    private readonly ICache&lt;ISearchResult&gt; cache;
+    
+    public CachingSearchServiceDecorator(<span class="attention">ISearchService concreteService</span>, ICache&lt;ISearchResult&gt; cache)
+    {
+        this.concreteService = concreteService;
+        this.cache = cache;
+    }
+    public ISearchResult Search(SearchCriteria criteria)
+    {
+        var key = "CachingSearchServiceDecorator";
+        if (criteria != null)
+        {
+            key += criteria.GetHashCode().ToString();
+        }
+        <span class="attention">if (!cache.ContainsKey(key))</span>
+        <span class="attention">{</span>
+        <span class="attention">    cache.AddEntity(key, concreteService.Search(criteria));</span>
+        <span class="attention">}</span>
+        <span class="attention">return cache.GetEntity(key);</span>
+    }
+}
+            </code>
+            </pre>
+        </div>
+
+        <div class="step" data-x="3000" data-y="2000" data-rotate="0">
+            <pre>
+            <code class="cs">
+public ISearchResult Search(SearchCriteria criteria)
+{
+    if (criteria == null || string.IsNullOrWhiteSpace(criteria.Text))
+        return new SearchResult();
+    var timer = new Sitecore.Diagnostics.HighResTimer(true);
+    var index = ContentSearchManager.GetIndex("sitecore_master_index");
+    using (var context = index.CreateSearchContext())
+    {
+        Expression&lt;func&lt;SearchResultItem, bool&gt;&gt; predicate = PredicateBuilder.True&lt;SearchResultItem&gt;();
+        foreach(var entry in criteria.Text.Split(' '))
+        {
+            predicate = predicate.And(i => i.Content == entry);
+        }
+                
+        var queryable = context.GetQueryable&lt;SearchResultItem&gt;();
+        var result = queryable
+            .Where(predicate)
+            .Page(criteria.CurrentPage-1, criteria.PageSize)
+            .FacetPivotOn(p => p.FacetOn(d => d["categories"]).FacetOn(d => d["haspoint"]))
+            .GetResults();
+        return new SearchResult()
+        {
+            ResultDocuments = result.Hits.Select(hit => hit.Document).ToList(),
+            Facets = CollectFacets(result.Facets.Categories),
+            TotalSearchResults = result.TotalSearchResults,
+            TotalMilliseconds = timer.ElapsedTimeSpan.Milliseconds;
+        };
+    }
+}
+                </code>
+<a href="https://www.youtube.com/watch?v=SMaWdFMVNa0&list=PL-LLg2yfNxZ6sOSMs9zwAYbDAgYDs44Oj">'Searching with Sitecore 7' on Youtube</a>
+            </pre>
+        </div>
+
+        <div class="step evolve" data-x="3000" data-y="2000" data-rotate="0" data-transition="100">
+            <pre>
+            <code class="cs">
+public ISearchResult Search(SearchCriteria criteria)
+{
+    if (criteria == null || string.IsNullOrWhiteSpace(criteria.Text))
+        return new SearchResult();
+    var timer = new Sitecore.Diagnostics.HighResTimer(true);
+    var index = ContentSearchManager.GetIndex("sitecore_master_index");
+    using (var context = index.CreateSearchContext())
+    {
+        <span class="attention">Expression&lt;func&lt;SearchResultItem, bool&gt;&gt; predicate = PredicateBuilder.True&lt;SearchResultItem&gt;();</span>
+        <span class="attention">foreach(var entry in criteria.Text.Split(' '))</span>
+        <span class="attention">{</span>
+        <span class="attention">    predicate = predicate.And(i => i.Content == entry);</span>
+        <span class="attention">}</span>
+                
+        var queryable = context.GetQueryable&lt;SearchResultItem&gt;();
+        var result = queryable
+            .Where(predicate)
+            .Page(criteria.CurrentPage-1, criteria.PageSize)
+            <span class="attention">.FacetPivotOn(p => p.FacetOn(d => d["categories"]).FacetOn(d => d["haspoint"]))</span>
+            .GetResults();
+        return new SearchResult()
+        {
+            ResultDocuments = result.Hits.Select(hit => hit.Document).ToList(),
+            Facets = CollectFacets(result.Facets.Categories),
+            TotalSearchResults = result.TotalSearchResults,
+            TotalMilliseconds = timer.ElapsedTimeSpan.Milliseconds;
+        };
+    }
+}
+                </code>
+<a href="https://www.youtube.com/watch?v=SMaWdFMVNa0&list=PL-LLg2yfNxZ6sOSMs9zwAYbDAgYDs44Oj">'Searching with Sitecore 7' on Youtube</a>
+            </pre>
+        </div>
+
+        <div class="step" data-x="4500" data-y="1500" data-z="1000">
+            <div class="headersq">
+                <div class="outerContainer"><div class="innerContainer">Predicate Builder</div></div>
+            </div>
+            <div class="rightcontent">
+                <ul style="list-style: disc; padding-left: 50px; font-size: 80%;">
+                    <li>When you need flow-control when building query</li>
+                    <li>And() / Or() / Not() / Create() / True() / False()</li>
+                    <li>Be careful when 'chaining' of predicates:<br /><i>predicate = predicate.And(...);</i></li>
+                </ul>
+                <p style="font-size: 80%;">
+                    <br />
+                    Comparison IQueryable and PredicateBuilder approach:
+                    <br />
+                    <br />
+                </p>
+                <pre style="font-size: 50%; font-family: Consolas, monospace, sans-serif;">
+var predicate = PredicateBuilder.True&lt;SearchResultItem&gt;()
+    .And(i => i.PropA == "a")
+    .And(i => i.PropB == "b");
+var count = queryable
+    .Where(predicate).Count();
+</pre>
+                <hr />
+                <pre style="font-size: 50%; font-family: Consolas, monospace, sans-serif;">
+var count = queryable
+    .Where(i => i.PropA == "a" && i.PropB == "b").Count();
+                </pre>
+            </div>
+        </div>
+
+        <div class="step" data-x="4500" data-y="2000" data-z="150">
+            <div class="headersq">
+                <div class="outerContainer"><div class="innerContainer">Facet and Facet Pivet</div></div>
+            </div>
+            <div class="rightcontent">
+                <ul style="list-style: disc; padding-left: 50px; font-size: 80%;">
+                    <li>Facets: Predict number of results if you where to filter on a facet whithin current query</li>
+                    <li>Pivot Facet: Create decision tree of predictions</li>
+                    <li>
+                        Note that Sitecore always returns a flat list - imagine a filter on 'category' (id) and 'haspoint' (bool):<br /><img src="images/pivotfacetresult.png" style="height: 400px; margin: 25px 0 0 0;" />
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="step" data-x="-2000" data-y="2000" data-rotate="180">
+            <p style="text-align:left; line-height: 1; font-size: 90px;">
+                <span class="muted">
+                    1) SEARCH EXAMPLE<br />
+                </span>
+                2) OFF-PISTE: GEO<br />
+                <span class="muted">
+                    3) TIPS AND TRICKS
+                </span>
+            </p>
+        </div>
+
+        <div class="step" data-x="-2000" data-y="1000" data-rotate="180">
+            <div class="headersq">
+                <div class="outerContainer"><div class="innerContainer">Sitecore Lucene Spatial Search</div></div>
+            </div>
+            <div class="rightcontent">
+                <p>Motivation: Sitecore currently does not support spatial queries</p>
+                <hr />
+                <p>Moving parts:</p>
+                <ul style="list-style: disc; padding-left: 50px; font-size: 100%;">
+                    <li>ComputedField for generating geohashes</li>
+                    <li>Override of LuceneIndex with support for spatial filter and ordering</li>
+                    <li>Based on Lucene.Net.Contrib.Spatial</li>
+                    <li>Context for specifying parameters - not integrated in LINQ layer :'-(</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="step" data-x="-2000" data-y="0" data-rotate="150">
+            <pre>
+            <code class="cs">
+var index = ContentSearchManager.GetIndex("sitecore_master_index") <span class="attention">as SpatialLuceneIndex</span>;
+using (var context = index.CreateSearchContext() <span class="attention">as SpatialLuceneSearchContext</span>)
+{
+    if (criteria.PointRadius != null)
+    {
+            <span class="attention">context.SetGeoFilter</span>(new PointRadiusCriterion()
+        {
+            FieldName = "_geohash",
+            RadiusKm = criteria.PointRadius.RadiusKm,
+            Latitude = criteria.PointRadius.Latitude,
+            Longitude = criteria.PointRadius.Longitude,
+            Sort = PointRadiusCriterion.SortOption.Ascending
+        });
+    }
+    var queriable = context.GetQueryable&lt;SearchResultItem&gt;();
+    //...
+                </code>
+            </pre>
+            <p style="font-size: 50%;"><a href="#">See the Usergroup.Sugnl repo on Github</a></p>
+        </div>
+
+        <div class="step" data-x="-2000" data-y="-1000" data-rotate="180">
+            <div style="width: 45%; height:100%; align-content:center; float:left;">
+                <p style="text-align:left; line-height: 1; font-size: 80%">
+                    Provided 'as is',
+                    results may vary,
+                    terms and conditions apply
+                </p>
+            </div>
+            <div style="width: 45%; height:100%; align-content:center; float:right;">
+                <p style="text-align:left; line-height: 1; font-size: 80%;">
+                    Known issue: Spatial filter does not apply to facet results
+                </p>
+            </div>
+        </div>
+
+        <div class="step" data-x="-4000" data-y="2000" data-rotate="0">
+            <p style="text-align:left; line-height: 1; font-size: 90px;">
+                <span class="muted">
+                    1) SEARCH EXAMPLE<br />
+                    2) OFF-PISTE: GEO<br />
+                </span>
+                3) TIPS AND TRICKS
+            </p>
+        </div>
+
+        <div class="step" data-x="-4000" data-y="3000">
+            <div class="header">
+                Tip: LinqPad + Sitecore = &#10084;
+            </div>
+            <div class="undercontent">
+                <p style="text-align:center;">
+                    <img src="images/linqpad.png" style="width:100%; " />
+                </p>
+                <p style="text-align:center; line-height: 1; font-size: 80%;">
+                    <a href="http://www.sitecore.net/Community/Technical-Blogs/Getting-to-Know-Sitecore/Posts/2014/03/LINQPad-Driver-for-Sitecore.aspx">See Adam Conn's blog post for more info</a>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="step" data-x="-4000" data-y="4000" data-rotate="0">
+            <pre>
+            <code class="cs">
+public class MyComputedField : IComputedIndexField
+{
+    //
+    // Tip: Constructor interrogates field configuration to find custom paramaters
+    //
+    public MyComputedField(XmlNode configNode)
+    {
+        string sourceFieldName = XmlUtil.GetAttribute("sourceFieldName", configNode, true);
+        this.SourceFieldName = sourceFieldName;
+    }
+    
+    public string SourceFieldName { get; set; }
+    //...
+                </code>
+            </pre>
+            <p style="font-size: 50%;"><a href="#">See the Usergroup.Sugnl repo on Github</a></p>
+        </div>
+
+
+        <div class="step" data-x="-2000" data-y="4000" data-rotate="0">
+            <pre>
+            <code class="cs">
+//
+// Tip: Turn off Indexing and eventing when bulk loading data into Sitecore
+//
+Sitecore.Configuration.Settings.Indexing.Enabled = false;
+using (new EventDisabler())
+{
+    //
+    // Bulk insertion of items goes here...
+    //
+}
+Sitecore.Configuration.Settings.Indexing.Enabled = true;
+                </code>
+            </pre>
+            <p style="font-size: 50%;"><a href="#">See the Usergroup.Sugnl repo on Github</a></p>
+        </div>
+
+        <div class="step" data-x="-2000" data-y="3000" data-rotate="30">
+            <p style="text-align:left; line-height: 1; font-size: 90px;">
+                Thanks for listening!
+            </p>
+            <p style="text-align:left; line-height: 1; font-size: 90px;">
+                @herskinduk
+            </p>
+            <p style="text-align:left; line-height: 1; font-size: 90px;">
+                #SUGCON #Sitecore
+            </p>
+        </div>
+
+
+        <div class="step" data-x="2000" data-y="0">
+            <p><img src="images/last.png" alt="last slide" style="width:100%"/></p>
+        </div>
+
+        <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10">
+        </div>
+
+    </div>
+    <script src="js/impress.js"></script>
+    <script src="js/highlight.pack.js"></script>
+    <script>
+        impress().init();
+        hljs.initHighlightingOnLoad();
+    </script>
+</body>
+</html>
